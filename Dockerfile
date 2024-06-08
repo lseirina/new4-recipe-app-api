@@ -9,4 +9,4 @@ EXPOSE 8000
 
 RUN pip install --upgrade pip && \
     pip install -r /tmp/requirements.txt && \
-    rm -rf tmp
+    rm -rf /tmp
