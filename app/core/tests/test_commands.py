@@ -37,7 +37,7 @@ class CommandTests(SimpleTestCase):
             при следующих трех — OperationalError, а на шестой вызов вернет True."""
         # то же самое что такой список [Psycopg2Error, Psycopg2Error, OperationalError, OperationalError, OperationalError, True]
         patched_check.side_effect = [Psycopg2Error] * 2 + \
-            [OperationalError] * 3 + True
+            [OperationalError] * 3 + [True]
 
         call_command('wait_for_db')
 
