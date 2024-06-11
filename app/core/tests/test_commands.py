@@ -11,6 +11,8 @@ from django.test import SimpleTestCase
 
 """Этот декоратор заменяет метод check класса Command на объект-имитацию,
     который передается в тестовый метод как patched_check"""
+
+
 @patch('core.management.commands.wait_for_db.Command.check')
 class CommandTests(SimpleTestCase):
     """Tests commands."""
