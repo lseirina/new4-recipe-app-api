@@ -29,7 +29,8 @@ class CommandTests(SimpleTestCase):
             databases=['default']"""
         patched_check.assert_called_once_with(databases=['default'])
 
-    def test_wait_for_db_delay(self, patched_check):
+    @patch('time.sleep')
+    def test_wait_for_db_delay(self, patched_sleep, patched_check):
         """Test wait_for_db command with getting OperationalError."""
         """Здесь side_effect настроен как список значений, вызывает исключения
             Это значит, что при первых двух вызовах имитация будет поднимать Psycopg2Error,
