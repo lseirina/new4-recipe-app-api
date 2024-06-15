@@ -1,5 +1,5 @@
 """Views for user API View."""
-from res_framework import generics
+from rest_framework import generics
 from user.serializers import UserSerializer
 
 
