@@ -120,3 +120,13 @@ class PrivatUserAPITests(TestCase):
         )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
+
+    def test_get_profile_success(self):
+        """Test getting authenticated user is successful."""
+        res = self.client.get(ME_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, {
+            'email': self.user.email,
+            'password': self.user.password,
+        })
