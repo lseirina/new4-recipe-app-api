@@ -1,5 +1,9 @@
 """Views for user API View."""
-from rest_framework import generics
+from rest_framework import (
+    generics,
+    authentication,
+    permissions,
+    )
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
 from user.serializers import (
@@ -17,3 +21,14 @@ class CreateTokenView(ObtainAuthToken):
     """Create a new auth token for user."""
     serializer_class = AuthTokenSerializer
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+
+class ManageUserView(generics.RetrieveUpdateAPIView):
+    """Manage the authenticate user."""
+    serializer_classes = UserSerializer
+    authentication_classes = [authentication.TokenAuhentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_objects(self):
+        """Retrieve and return the authenticated user."""
+        return self.request.user
