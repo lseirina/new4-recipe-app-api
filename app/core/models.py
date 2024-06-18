@@ -1,7 +1,7 @@
 """
 Database models
 """
-from django.contrib import settings
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -54,7 +54,7 @@ class Recipe(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     time_minutes = models.IntegerField()
-    price = models.DecimalField(max_degits=5, decimal=2)
+    price = models.DecimalField(max_digits=5, decimal_places=2)
     link = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
