@@ -127,8 +127,8 @@ class PrivatUserAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, {
+            'name': self.user.name,
             'email': self.user.email,
-            'password': self.user.password,
         })
 
     def test_post_me_not_allowed(self):
@@ -141,7 +141,7 @@ class PrivatUserAPITests(TestCase):
         """Test update user profile for authenticated user."""
         payload = {'name': 'New Name', 'password': 'newtestpass123'}
 
-        res = self.client(ME_URL, payload)
+        res = self.client.patch(ME_URL, payload)
 
         self.user.refresh_from_db()
         self.assertEqual(res.status_code, status.HTTP_200_OK)
