@@ -39,3 +39,26 @@ class PublicRecipeAPITests(TestCase):
         res = self.client.get(RECIPE_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class PrivatRecipeAPITests(TestCase):
+    """Tests for authorized user."""
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            email='test@example.com',
+            password='testpass123'
+        )
+        self.client = APIClient()
+        self.client.force_login(user=self.user)
+
+    def test_retrieve_list(self):
+        """Test retrieving list of recipes."""
+        create_recipe(user=self.user)
+        create_recipe(user=self.user)
+
+        res = self.client.get(RECIPE_URL)
+        recipes = Recipe.objects.all.order_by('-id')
+        serializer = RecipeSerializer(recipes, many=True)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
