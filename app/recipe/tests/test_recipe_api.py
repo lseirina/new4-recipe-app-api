@@ -62,3 +62,19 @@ class PrivatRecipeAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
+    def test_retrieve_recipe_limit_to_user(self):
+        """Test retrieving recipes are linited to authenticated user."""
+        other_user = get_user_model().objects.create_user(
+            email='test2@example.com',
+            password='testpass123',
+        )
+        create_recipe(user=self.user)
+        create_recipe(user=other_user)
+
+        recipe = Recipe.objects.filter(user=self.user)
+        serializer = RecipeSerializer(recipe)
+        res = self.client.get(RECIPE_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
