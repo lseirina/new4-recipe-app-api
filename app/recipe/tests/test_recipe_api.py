@@ -13,6 +13,9 @@ from recipe.serializers import RecipeSerializer
 
 RECIPES_URL = reverse('recipe:recipe-list')
 
+def detail_url(recipe_id):
+    """Create and return a recipe detail url."""
+    return reverse('recipe:recipe-detail', args=[recipe_id])
 
 def create_recipe(user, **params):
     """Create and return recipe."""
@@ -50,7 +53,7 @@ class PrivatRecipeAPITests(TestCase):
             password='testpass123'
         )
         self.client = APIClient()
-        self.client.force_login(user=self.user)
+        self.client.force_authenticate(self.user)
 
     def test_retrieve_list(self):
         """Test retrieving list of recipes."""
@@ -58,7 +61,7 @@ class PrivatRecipeAPITests(TestCase):
         create_recipe(user=self.user)
 
         res = self.client.get(RECIPES_URL)
-        recipes = Recipe.objects.all.order_by('-id')
+        recipes = Recipe.objects.all().order_by('-id')
         serializer = RecipeSerializer(recipes, many=True)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -74,7 +77,7 @@ class PrivatRecipeAPITests(TestCase):
         create_recipe(user=other_user)
 
         recipe = Recipe.objects.filter(user=self.user)
-        serializer = RecipeSerializer(recipe)
+        serializer = RecipeSerializer(recipe, many=True)
         res = self.client.get(RECIPES_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
