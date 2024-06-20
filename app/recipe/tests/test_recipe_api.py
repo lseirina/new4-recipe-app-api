@@ -79,7 +79,7 @@ class PrivatRecipeAPITests(TestCase):
 
     def test_retrieve_recipe_limit_to_user(self):
         """Test retrieving recipes are linited to authenticated user."""
-        other_user = get_user_model().objects.create_user(
+        other_user = create_user(
             email='test2@example.com',
             password='testpass123',
         )
@@ -115,4 +115,19 @@ class PrivatRecipeAPITests(TestCase):
         recipe = Recipe.objects.get(id=res.data['id'])
         for k, v in payload.items():
             self.assertEqual(getattr(recipe, k), v)
+        self.assertEqual(recipe.user, self.user)
+
+    def test_partial_update(self):
+        """Test a partial update of the recipe."""
+        original_link = 'http://examples.recipes.pdf'
+        recipe = create_recipe(user=self.user, link=original_link)
+        payload = {'title': 'New Title'}
+
+        url = detail_url(recipe.id)
+        res = self.client.patch(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        recipe.refresh_from_db()
+        self.assertEqual(recipe.title, payload['title'])
+        self.assertEqual(recipe.link, original_link)
         self.assertEqual(recipe.user, self.user)
