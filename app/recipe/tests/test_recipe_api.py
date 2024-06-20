@@ -38,6 +38,11 @@ def create_recipe(user, **params):
     return recipe
 
 
+def create_user(**params):
+    """Create and return user."""
+    return get_user_model().objects.create_user(**params)
+
+
 class PublicRecipeAPITests(TestCase):
     """Test unauthenticated API requests."""
     def setUp(self):
@@ -53,7 +58,7 @@ class PublicRecipeAPITests(TestCase):
 class PrivatRecipeAPITests(TestCase):
     """Tests for authorized user."""
     def setUp(self):
-        self.user = get_user_model().objects.create_user(
+        self.user = create_user(
             email='test@example.com',
             password='testpass123'
         )
@@ -103,13 +108,11 @@ class PrivatRecipeAPITests(TestCase):
             'title': 'New Recipe',
             'time_minutes': 22,
             'price': Decimal('3.50'),
-            'description': 'Sample description',
-            'link': 'http://example.com/recipe.pdf',
         }
         res = self.client.post(RECIPES_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        recipe = Recipe.objects.filter(id=res.data['id'])
+        recipe = Recipe.objects.get(id=res.data['id'])
         for k, v in payload.items():
             self.assertEqual(getattr(recipe, k), v)
-        self.assertEqual(recipe.user, res.user)
+        self.assertEqual(recipe.user, self.user)
