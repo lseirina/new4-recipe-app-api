@@ -150,3 +150,18 @@ class PrivatRecipeAPITests(TestCase):
         for k, v in payload.items():
             self.assertEqual(getattr(recipe, k), v)
         self.assertEqual(recipe.user, self.user)
+
+    def test_update_user_returns_error(self):
+        """Test changing recipe user results in error."""
+        recipe = create_recipe(user=self.user)
+        new_user = create_user(
+            email='newuser@example.com',
+            password='test123',
+        )
+        payload = {'user': new_user.id}
+        url = detail_url(recipe.id)
+        self.client.patch(url, payload)
+
+        recipe.refresh_from_db()
+        self.assertEqual(recipe.user, self.user)
+
