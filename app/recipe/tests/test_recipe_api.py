@@ -158,6 +158,9 @@ class PrivatRecipeAPITests(TestCase):
             email='newuser@example.com',
             password='test123',
         )
+        """Поле user в модели Recipe является внешним ключом (ForeignKey),
+        которое ссылается на пользователя. При обновлении этого поля через API
+        нужно указать идентификатор (id) пользователя, а не сам объект пользователя."""
         payload = {'user': new_user.id}
         url = detail_url(recipe.id)
         self.client.patch(url, payload)
@@ -165,3 +168,21 @@ class PrivatRecipeAPITests(TestCase):
         recipe.refresh_from_db()
         self.assertEqual(recipe.user, self.user)
 
+    def test_delete_recipe(self):
+        recipe = create_recipe(user=self.user)
+        url = detail_url(recipe.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Recipe.objects.filter(id=recipe.id).exists())
+
+    def test_delete_other_user_recipe_error(self):
+        """Test deleting other users recipe gives error."""
+        new_user = create_user(email='newuser@example.com', password='test123')
+        recipe = create_recipe(user=new_user)
+
+        url = detail_url(recipe.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTrue(Recipe.objects.filter(id=recipe.id).exists())
