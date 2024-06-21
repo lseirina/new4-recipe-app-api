@@ -24,5 +24,6 @@ class RecipeDetailSerializer(RecipeSerializer):
 class TagSerializer(serializers.ModelSerializer):
     """Serializer for tags."""
     class Meta:
-        model = Tagfields = ['id', 'name']
+        model = Tag
+        fields = ['id', 'name']
         read_only_fields = ['id']

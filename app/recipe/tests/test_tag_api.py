@@ -37,7 +37,7 @@ class PrivatTagAPITest(TestCase):
     def setUp(self):
         self.user = create_user()
         self.client = APIClient()
-        self.client.force_authenticat(user=self.user)
+        self.client.force_authenticate(user=self.user)
 
     def test_retrieve_tags(self):
         """Test retrieving a list of tags."""
@@ -60,5 +60,5 @@ class PrivatTagAPITest(TestCase):
         res = self.client.get(TAGS_URL)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 1)
-        self.assertEqaul(res.data[0]['name'], tag.name)
+        self.assertEqual(res.data[0]['name'], tag.name)
         self.assertEqual(res.data[0]['id'], tag.id)
