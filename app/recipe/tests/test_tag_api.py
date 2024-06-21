@@ -1,0 +1,32 @@
+"""
+Test for Tag API
+"""
+from django.contrib.auth import get_user_model
+from django.urls import reverse
+from django.test import TestCase
+
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from core.models import Tag
+from recipe.serializers import TagSerializer
+
+TAGS_URL = reverse('recipe:tag-list')
+
+
+def creat_user(email='test@eaxmple.com', password='test123'):
+    """Create an dreturn a new user."""
+    return get_user_model().objects.create_user(email=email, password=password)
+
+
+class PrivateTagAPITests(TestCase):
+    """Test unaithenticated API requests."""
+
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_auth_required(self):
+        """Test auth required for retrieving tags"""
+        res = self.client.get(TAGS_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
