@@ -5,7 +5,10 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Recipe
+from core.models import (
+    Recipe,
+    Tag,
+)
 from recipe import serializers
 
 
@@ -30,3 +33,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Create a new user."""
         serializer.save(user=self.request.user)
+
+
+class TagViewSet(viewsets.ModelViewSet):
+    """View"""
