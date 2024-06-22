@@ -14,6 +14,11 @@ from recipe.serializers import TagSerializer
 TAGS_URL = reverse('recipe:tag-list')
 
 
+def detail_url(tag_id):
+    """Create and return a tag detail url."""
+    return reverse('recipe:tag-detail', args=[tag_id])
+
+
 def create_user(email='test@eaxmple.com', password='test123'):
     """Create an dreturn a new user."""
     return get_user_model().objects.create_user(email=email, password=password)
@@ -67,9 +72,18 @@ class PrivatTagAPITest(TestCase):
         """Test updating tag."""
         tag = Tag.objects.create(user=self.user, name='Lunch')
         payload = {'name': 'Breakfast'}
-        res = self.client.patch(TAGS_URL)
+        url = detail_url(tag.id)
+        res = self.client.patch(url, payload)
 
         tag.refresh_from_db()
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(tag.name, payload['name'])
 
+    def test_delete_tag(self):
+        """Test deleting a tag."""
+        tag = Tag.objects.create(user=self.user, name='Dessert')
+        url = detail_url(tag.id)
+
+        res = self.client.delete(url)
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Tag.objects.get(id=tag.id).existd())

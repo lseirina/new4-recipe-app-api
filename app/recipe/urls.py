@@ -1,5 +1,5 @@
 """
-Urls mapping for the redipe app.
+Urls mapping for the recipe app.
 """
 from django.urls import (
     path,
