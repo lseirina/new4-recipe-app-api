@@ -86,4 +86,5 @@ class PrivatTagAPITest(TestCase):
 
         res = self.client.delete(url)
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Tag.objects.get(id=tag.id).existd())
+        tags = Tag.objects.filter(user=self.user)
+        self.assertFalse(tags.exists())
