@@ -202,12 +202,12 @@ class PrivatRecipeAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         recipes = Recipe.objects.filter(user=self.user)
-        self.assertEqual(res.count(), 1)
+        self.assertEqual(recipes.count(), 1)
         recipe = recipes[0]
         self.assertEqual(recipe.tags.count(), 2)
         for tag in payload['tags']:
             exists = recipe.tags.filter(
-                name=tag.name,
+                name=tag['name'],
                 user=self.user,
             ).exists()
         self.assertTrue(exists)
@@ -231,7 +231,18 @@ class PrivatRecipeAPITests(TestCase):
         self.assertIn(tag_indian, recipe.tags.all())
         for tag in payload['tags']:
             exists = recipe.tags.filter(
-                name=tag.name,
+                name=tag['name'],
                 user=self.user,
             ).exists()
         self.assertTrue(exists)
+
+    def test_create_tag_on_update(self):
+        """Test creating tag when update recipe."""
+        recipe = create_recipe(user=self.user)
+        payload = {'tags': [{'name': 'Lunch'}]}
+        url = detail_url(recipe.id)
+
+        res = self.client.patch(url, payload, format='json')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        new_tag = Tag.objects.get(user=self.user, name='Lunch')
+        self.assertIn(new_tag, recipe.tags.all())

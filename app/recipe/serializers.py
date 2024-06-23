@@ -34,7 +34,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 user=auth_user,
                 name=tag['name']
             )
-            recipe.add(tag_obj)
+            recipe.tags.add(tag_obj)
 
         return recipe
 
