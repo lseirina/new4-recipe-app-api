@@ -30,3 +30,26 @@ class PublicIngredientsAPITests(TestCase):
         res = self.client.get(INGREDIENT_URL)
 
         self.assertequal(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class PrivatIngredientAPITest(TestCase):
+    """Tests authenticated API requests."""
+    def setUp(self):
+        self.user = create_user()
+        self.client = APIClient()
+        self.client.force_authenticate(self.user)
+
+    def test_retrieve_ingredients(self):
+        """Test retrieving a list of ingredients."""
+        Ingredient.objects.create(
+            user=self.user,
+            name='Salt',
+        )
+        Ingredient.objects.create(
+            user=self.user,
+            name='Sugar',
+        )
+        res = self.client.get(INGREDIENT_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        
