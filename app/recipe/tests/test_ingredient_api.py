@@ -51,5 +51,23 @@ class PrivatIngredientAPITest(TestCase):
         )
         res = self.client.get(INGREDIENT_URL)
 
+        ingredients = Ingredient.objects.all()
+        serializer = IngredientSerializer(ingredients, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        
+        self.assertEqual(res.data, serializer.data)
+
+    def test_ingrdients_limited_to_user(self):
+        """Test ingredients limited to authenticated user."""
+        new_user = get_user_model().objects.create_user(
+            email='user1@example.com',
+            password='test123',
+        )
+        Ingredient.objects.create(user=new_user, name='Apples')
+        ingredient = Ingredient.objects.create(user=self.user, name='Kivi')
+
+        res = self.client.get(INGREDIENT_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertequal(len(res.data), 1)
+        self.assertEqual(res.data[0]['name'], ingredient.name)
+        self.assertEqual(res.data[0]['id'], ingredient.id)
