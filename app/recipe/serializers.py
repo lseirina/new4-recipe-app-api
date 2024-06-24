@@ -38,7 +38,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         """Create a recipe."""
         tags = validated_data.pop('tags', [])
         recipe = Recipe.objects.create(**validated_data)
-        self._get_or_create(tags, recipe)
+        self._get_or_create_tags(tags, recipe)
 
         return recipe
 
@@ -49,10 +49,11 @@ class RecipeSerializer(serializers.ModelSerializer):
             instance.tags.clear()
             self._get_or_create_tags(tags, instance)
 
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
         instance.save()
         return instance
-
-
 
 
 class RecipeDetailSerializer(RecipeSerializer):
