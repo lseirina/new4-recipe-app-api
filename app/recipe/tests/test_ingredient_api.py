@@ -18,3 +18,15 @@ INGREDIENT_URL = reverse('recipe:ingredient-list')
 def create_user(email='test@example.com', password='test123'):
     """Create and return a new user."""
     return get_user_model().objects.create_user(email=email, password=password)
+
+
+class PublicIngredientsAPITests(TestCase):
+    """Tests unauthenticated API requests."""
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_auth_required(self):
+        """Test auth is required for retrieving ingredients."""
+        res = self.client.get(INGREDIENT_URL)
+
+        self.assertequal(res.status_code, status.HTTP_401_UNAUTHORIZED)
