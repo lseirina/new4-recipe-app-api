@@ -81,8 +81,18 @@ class PrivatIngredientAPITest(TestCase):
         ingredient = Ingredient.objects.create(user=self.user, name='Bread')
         payload = {'name': 'Butter'}
         url = detail_url(ingredient.id)
-        res = self.client.put(url, payload)
+        res = self.client.patch(url, payload)
 
         ingredient.refresh_from_db()
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(ingredient.name, payload['name'])
+
+    def test_delete_ingredient(self):
+        """Test deleting ingredients."""
+        ingredient = Ingredient.objects.create(user=self.user, name='Eggs')
+        url = detail_url(ingredient.id)
+
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        
