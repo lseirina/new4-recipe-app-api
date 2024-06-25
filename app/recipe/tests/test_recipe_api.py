@@ -328,7 +328,7 @@ class PrivatRecipeAPITests(TestCase):
         payload = {
                 'ingredients': [{'name': 'Egg'}],
             }
-        recipe = create_recipe()
+        recipe = create_recipe(user=self.user)
         url = detail_url(recipe.id)
         res = self.client.patch(url, payload, format='json')
 
@@ -338,12 +338,12 @@ class PrivatRecipeAPITests(TestCase):
 
     def test_update_recipe_assign_ingredient(self):
         """Test update recipe assigning existing ingredient."""
-        ingredient1 = Ingredient.objects.creating(
+        ingredient1 = Ingredient.objects.create(
             user=self.user,
             name='Butter',
         )
-        recipe = create_recipe()
-        recipe.add(ingredient1)
+        recipe = create_recipe(user=self.user)
+        recipe.ingredients.add(ingredient1)
         ingredient2 = Ingredient.objects.create(user=self.user, name='Bread')
         payload = {'ingredients': [{'name': 'Bread'}]}
         url = detail_url(recipe.id)
@@ -352,7 +352,7 @@ class PrivatRecipeAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertIn(ingredient2, recipe.ingredients.all())
-        self.assertNotIn(ingredient2, recipe.ibgredients.all())
+        self.assertNotIn(ingredient1, recipe.ingredients.all())
 
     def test_clear_recipe_ingredients(self):
         """Test clearing recipe ingredients."""
@@ -360,12 +360,12 @@ class PrivatRecipeAPITests(TestCase):
             user=self.user,
             name='Salad',
         )
-        recipe = create_recipe()
-        recipe.add(ingredient)
+        recipe = create_recipe(user=self.user)
+        recipe.ingredients.add(ingredient)
         url = detail_url(recipe.id)
-        payload = {'name': []}
+        payload = {'ingredients': []}
 
-        res = self.client.patch(url, payload)
+        res = self.client.patch(url, payload, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertNotIn(recipe.ingredients.count(), 0)
+        self.assertEqual(recipe.ingredients.count(), 0)
