@@ -332,7 +332,6 @@ class PrivatRecipeAPITests(TestCase):
         url = detail_url(recipe.id)
         res = self.client.patch(url, payload, format='json')
 
-        recipe.fresh_from_db()
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         new_ingredient = Ingredient.objects.get(user=self.user, name='Egg')
         self.assertIn(new_ingredient, recipe.ingredients.all())
@@ -354,3 +353,19 @@ class PrivatRecipeAPITests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertIn(ingredient2, recipe.ingredients.all())
         self.assertNotIn(ingredient2, recipe.ibgredients.all())
+
+    def test_clear_recipe_ingredients(self):
+        """Test clearing recipe ingredients."""
+        ingredient = Ingredient.objects.create(
+            user=self.user,
+            name='Salad',
+        )
+        recipe = create_recipe()
+        recipe.add(ingredient)
+        url = detail_url(recipe.id)
+        payload = {'name': []}
+
+        res = self.client.patch(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertNotIn(recipe.ingredients.count(), 0)
