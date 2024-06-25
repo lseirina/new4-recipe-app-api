@@ -322,3 +322,17 @@ class PrivatRecipeAPITests(TestCase):
                 user=self.user
                 ).exists()
             self.assertTrue(exists)
+
+    def test_create_ingredient_on_update(self):
+        """Test creating an ingredients when updating the recipe."""
+        payload = {
+                'ingredients': [{'name': 'Egg'}],
+            }
+        recipe = create_recipe()
+        url = detail_url(recipe.id)
+        res = self.client.patch(url, payload, format='json')
+
+        recipe.fresh_from_db()
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        new_ingredient = Ingredient.objects.filter(user=self.user)
+        self.assertIn(new_ingredient, recipe.ingredients.all())

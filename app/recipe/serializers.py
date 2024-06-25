@@ -49,7 +49,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def _get_or_create_ingredients(self, ingredients, recipe):
         """Get or create ingredients."""
-        auth_user = self.context['required'].user
+        auth_user = self.context['request'].user
         for ingredient in ingredients:
             ing_obj, created = Ingredient.objects.get_or_create(
                 user=auth_user,
