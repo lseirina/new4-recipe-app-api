@@ -22,4 +22,4 @@ RUN pip install --upgrade pip && \
     mkdir -p /vol/web/media && \
     mkdir -p /vol/web/static && \
     chown -R root:root /vol && \
-    chomod -R 755 /vol
+    chmod -R 755 /vol
