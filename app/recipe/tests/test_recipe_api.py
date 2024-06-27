@@ -1,5 +1,6 @@
 """Tests for recipe API."""
 from decimal import Decimal
+import os
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -24,6 +25,11 @@ RECIPES_URL = reverse('recipe:recipe-list')
 def detail_url(recipe_id):
     """Create and return a recipe detail url."""
     return reverse('recipe:recipe-detail', args=[recipe_id])
+
+
+def image_upload_url(recipe_id):
+    """Create and return an image upload url."""
+    return reverse('recipe:recipe-upload-image', args=[recipe_id])
 
 
 def create_recipe(user, **params):
