@@ -375,3 +375,15 @@ class PrivatRecipeAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(recipe.ingredients.count(), 0)
+
+
+class recipeImageTests(TestCase):
+    """Tests for recipe images."""
+    def setUp(self):
+        self.user = create_user(email='test@example.com', password='test123')
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+        self.recipe = create_user(user=self.user)
+
+    def tearDown(self):
+        self.recipe.image.delete()
