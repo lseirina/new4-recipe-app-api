@@ -7,6 +7,7 @@ from rest_framework import (
     status,
 )
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -33,7 +34,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Return  serializer for the request."""
         if self.action == 'list':
             return serializers.RecipeSerializer
-        if self.action == 'upload-image':
+        if self.action == 'upload_image':
             return serializers.RecipeImageSerializer
 
         return self.serializer_class
@@ -42,7 +43,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Create a new user."""
         serializer.save(user=self.request.user)
 
-    @action(method=['POST'], detail=True, url_path='upload-image')
+    @action(methods=['POST'], detail=True, url_path='upload-image')
     def upload_image(self, request, pk=None):
         """Upload an image to recipe."""
         recipe = self.get_object()

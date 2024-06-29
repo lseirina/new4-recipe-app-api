@@ -379,14 +379,40 @@ class PrivatRecipeAPITests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(recipe.ingredients.count(), 0)
 
+    def test_filter_by_tags(self):
+        """Test filtering recipes by tags."""
+        r1 = create_recipe(user=self.user, title='Cherry cake')
+        r2 = create_recipe(user=self.user, title='Plum cake')
+        tag1 = Tag.objects.create(user=self.user, name='Dessert')
+        tag2 = Tag.objects.create(user=self.user, name='Yamy')
+        r1.tags.add(tag1)
+        r2.tags.add(tag2)
+        r3 = create_recipe(user=self.user, title='Eggs')
+
+        s1 = RecipeSerializer(r1)
+        s2 = RecipeSerializer(r2)
+        s3 = RecipeSerializer(r3)
+
+        params = {'tags': f'{tag1.id}, {tag2.id}'}
+        res = self.client.get(RECIPES_URL, params)
+
+        self.assertIn(s1.data, res.data)
+        self.assertIn(s2.data, res.data)
+        self.assertnotIn(s3.data, res.data)
+
+
+
 
 class recipeImageTests(TestCase):
     """Tests for recipe images."""
     def setUp(self):
-        self.user = create_user(email='test@example.com', password='test123')
+        self.user = create_user(
+            email='test@example.com',
+            password='testpass123'
+        )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
-        self.recipe = create_user(user=self.user)
+        self.recipe = create_recipe(user=self.user)
 
     def tearDown(self):
         self.recipe.image.delete()
