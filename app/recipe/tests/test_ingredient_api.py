@@ -121,4 +121,24 @@ class PrivatIngredientAPITest(TestCase):
         self.assertEqualIn(s1.data, res.data)
         self.assertNoyIn(s2.data, res.data)
 
-    
+    def test_filtered_ingredients_unique(self):
+        """Test filtered ingredients returns a unique list."""
+        ing = Ingredient.objects.create(user=self.user, name='Egges')
+        Ingredient.objects.create(user=self.user, name='Banana')
+        recipe1 = Recipe.objects.create(
+            user=self.user,
+            title='Freing eggs',
+            price=Decimal('3.50'),
+            time_minutes=15,
+        )
+        recipe2 = Recipe.objects.create(
+            user=self.user,
+            title='Benedict eggs',
+            price=Decimal('3.50'),
+            time_minutes=15,
+        )
+        recipe1.ingredients.add(ing)
+        recipe2.ingredients.add(ing)
+
+        res = self.client.get(INGREDIENT_URL, {'assigned_only': 1})
+        self.assertEqual(len(res.data), 1)

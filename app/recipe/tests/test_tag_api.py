@@ -111,3 +111,5 @@ class PrivatTagAPITest(TestCase):
         s2 = TagSerializer(tag2)
         self.assertIn(s1.data, res.data)
         self.assertNotIn(s2.data, res.data)
+
+    
