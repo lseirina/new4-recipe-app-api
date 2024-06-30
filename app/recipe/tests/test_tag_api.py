@@ -112,4 +112,24 @@ class PrivatTagAPITest(TestCase):
         self.assertIn(s1.data, res.data)
         self.assertNotIn(s2.data, res.data)
 
-    
+    def test_filtered_tags_unique(self):
+        """Test filtered tags returns unique_list."""
+        tag = Tag.objects.create(user=self.user, name='breakfast')
+        Tag.objects.create(user=self.user, name='Lunch')
+        recipe1 = Recipe.objects.create(
+            user=self.user,
+            title='Soup',
+            price=Decimal('6.50'),
+            time_minutes=50,
+        )
+        recipe2 = Recipe.objects.create(
+            user=self.user,
+            title='Rice',
+            price=Decimal('2.50'),
+            time_minutes=20,
+        )
+        recipe1.tags.add(tag)
+        recipe2.tags.add(tag)
+
+        res = self.client.get(TAGS_URL, {'assigned_only': 1})
+        self.assertEqual(len(res.data), 1)
