@@ -120,3 +120,5 @@ class PrivatIngredientAPITest(TestCase):
         s2 = IngredientSerializer(in2)
         self.assertEqualIn(s1.data, res.data)
         self.assertNoyIn(s2.data, res.data)
+
+    
