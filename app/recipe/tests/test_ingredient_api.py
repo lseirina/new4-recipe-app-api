@@ -118,8 +118,8 @@ class PrivatIngredientAPITest(TestCase):
 
         s1 = IngredientSerializer(in1)
         s2 = IngredientSerializer(in2)
-        self.assertEqualIn(s1.data, res.data)
-        self.assertNoyIn(s2.data, res.data)
+        self.assertIn(s1.data, res.data)
+        self.assertNotIn(s2.data, res.data)
 
     def test_filtered_ingredients_unique(self):
         """Test filtered ingredients returns a unique list."""
