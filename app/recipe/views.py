@@ -25,6 +25,22 @@ from core.models import (
 from recipe import serializers
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                'tags',
+                OpenApiTypes.STR,
+                description='Comma separated list of tags'
+            ),
+            OpenApiParameter(
+                'ingredients',
+                OpenApiTypes.STR,
+                description='Comma separated list of ingredients'
+            )
+        ]
+    )
+)
 class RecipeViewSet(viewsets.ModelViewSet):
     """view for manage recipe APIs."""
     serializer_class = serializers.RecipeDetailSerializer
@@ -43,12 +59,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
         if tags:
             tag_ids = self._params_to_int(tags)
-            queryset = self.request.filter(tags__id__in=tag_ids)
+            queryset = queryset.filter(tags__id__in=tag_ids)
         if ingredients:
             ingredient_ids = self._params_to_int(ingredients)
-            queryset = self.request.filter(ingredients__id__in=ingredient_ids)
+            queryset = queryset.filter(ingredients__id__in=ingredient_ids)
 
-        return queryset.filter(user=self.request.user).order_by('id').distinct()
+        return queryset.filter(
+            user=self.request.user
+            ).order_by('-id').distinct()
 
     def get_serializer_class(self):
         """Return  serializer for the request."""
