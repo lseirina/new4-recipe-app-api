@@ -12,7 +12,7 @@ server {
     location / {
         # tells Nginx to forward requests to a uWSGI server
         uwsgi_pass           ${APP_HOST}:${APP_PORT}; # the hostname and port of the uWSGI
-        include              /ect/nginx/uwsgi_params; # includes a file containing uWSGI parameters.
+        include              /etc/nginx/uwsgi_params; # includes a file containing uWSGI parameters.
         client_max_body_size 10M; # allowed size of photo
     }
 }
