@@ -1,4 +1,4 @@
-#!bin/sh
+#!/bin/sh
 
 set -e # if fails one - everything fail
 
