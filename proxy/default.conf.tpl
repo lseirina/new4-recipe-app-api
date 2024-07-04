@@ -1,6 +1,6 @@
 server {
     # specifies the port that Nginx will listen on for incoming HTTP requests
-    listen $(LISTEN_PORT);
+    listen ${LISTEN_PORT};
 
     # defines how Nginx should handle requests to the /static URL path
     location /static {
