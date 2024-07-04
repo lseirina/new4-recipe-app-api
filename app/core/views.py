@@ -7,33 +7,3 @@ from rest_framework.response import Response
 def health_check(request):
     """Return successful response."""
     return Response({'healthy': True})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    0
