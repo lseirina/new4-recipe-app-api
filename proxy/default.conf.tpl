@@ -5,7 +5,7 @@ server {
     # defines how Nginx should handle requests to the /static URL path
     location /static {
         # any request to /static will be served from the /vol/static directory
-        alias /vol/static:
+        alias /vol/static;
     }
 
     # defines how Nginx should handle all other requests (i.e., those that don't match /static).
