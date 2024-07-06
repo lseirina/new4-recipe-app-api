@@ -24,8 +24,8 @@ RUN pip install --upgrade pip && \
     mkdir -p /vol/web/static && \
     chown -R root:root /vol && \
     chmod -R 755 /vol && \
-    chmod -R +x /scripts # run.sh will have executable permissions to be run as part of container.
+    chmod -R +x /scripts  # run.sh will have executable permissions to be run as part of container.
 
 ENV PATH="/scripts:$PATH"
 
-CMD ["run.sh"]
+CMD ["run.sh"] # uses a JSON array format for CMD.
