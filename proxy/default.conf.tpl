@@ -9,7 +9,7 @@ server {
     location / {
         # передает серверу uWSGI, работающему на хосте и порту, указанном в переменных ${APP_HOST} и ${APP_PORT}.
         uwsgi_pass           ${APP_HOST}:${APP_PORT};
-        include              /ect/nginx/uwsgi_params;
+        include              /etc/nginx/uwsgi_params;
         client_max_body_size 10M;
     }
 }
