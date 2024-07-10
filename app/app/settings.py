@@ -30,6 +30,10 @@ DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 
 ALLOWED_HOSTS = []
 ALLOWED_HOSTS.extend(
+    # Функция filter используется для удаления пустых строк из списка.
+    # None в качестве первого аргумента функции filter означает,
+    # что будут удалены все элементы,
+    # которые оцениваются как ложные (в данном случае, пустые строки).
     filter(
         None,
         os.environ.get('ALLOWED_HOSTS', '').split(','),
